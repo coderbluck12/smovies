@@ -9,9 +9,10 @@ if (!admin.apps.length) {
       throw new Error("FIREBASE_SERVICE_ACCOUNT_KEY environment variable is not set");
     }
 
+    const serviceAccount = JSON.parse(serviceAccountKey);
 
     admin.initializeApp({
-      credential: admin.credential.cert('./service-account.json'),
+      credential: admin.credential.cert(serviceAccount),
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
     });
     
