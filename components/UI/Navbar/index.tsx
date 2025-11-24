@@ -99,7 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({ isTransparent }) => {
 
               {/* Sign In Button - Hidden on smallest devices */}
               <button className="hidden sm:block bg-transparent px-3 sm:px-4 py-1 rounded-full border-2 sm:border-[3px] text-xs sm:text-sm border-rose-500 hover:text-black hover:bg-rose-500 duration-200 transition-all">
-                Sign In
+                View More
               </button>
 
               {/* Hamburger Menu - Always Visible on Mobile/Tablet */}
@@ -186,7 +186,7 @@ const Navbar: React.FC<NavbarProps> = ({ isTransparent }) => {
 
                 {/* Sign In Button */}
                 <button className="w-full bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-full text-sm sm:text-base font-semibold transition-all duration-200 active:scale-95">
-                  Sign In
+                  View More
                 </button>
               </div>
             </div>

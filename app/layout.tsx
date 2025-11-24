@@ -10,8 +10,8 @@ config.autoAddCss = false;
 const dmSans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Moviex Mex",
-  description: "Moviex Mex by Nkem Benjamin",
+  title: "SMovies",
+  description: "SMovies - Watch and download movies online for free",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
