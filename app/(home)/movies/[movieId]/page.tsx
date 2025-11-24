@@ -159,7 +159,7 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
             {movieDetails.tagline && (
               <div className="pb-4 border-b border-gray-200">
                 <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Tagline</p>
-                <p className="text-rose-600 font-semibold italic text-lg">"{movieDetails.tagline}"</p>
+                <p className="text-rose-600 font-semibold italic text-lg">&quot;{movieDetails.tagline}&quot;</p>
               </div>
             )}
 
