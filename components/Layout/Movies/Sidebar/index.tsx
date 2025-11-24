@@ -14,7 +14,7 @@ const MovieDetailsSideBar = () => {
       <aside className="min-h-screen fixed overflow-hidden md:w-[280px] sm:w-[160px] w-[60px] rounded-tr-3xl rounded-br-rounded-tr-3xl border-2 space-y-14">
         <Link href={"/"} className="flex space-x-4 items-center p-4">
           <Image src={`/images/others/movie_box_logo.png`} width={50} height={50} alt="Logo" />
-          <span className="font-bold md:text-xl sm:text-sm hidden sm:block">MovieMex</span>
+          <span className="font-bold md:text-xl sm:text-sm hidden sm:block">SMovies</span>
         </Link>
 
         <div className="space-y-2">

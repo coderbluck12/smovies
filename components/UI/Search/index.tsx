@@ -56,7 +56,7 @@ const SearchComponent = ({ isOpen, togggleOpen }: SearchComponentProps) => {
             <div className="flex space-x-2 items-center">
               <Image src={`/images/others/movie_box_logo.png`} width={40} height={40} alt="Logo" />
               <h3 className="font-bold text-xl">
-                <span className="text-rose-500 font-extrabold">MovieMex</span>
+                <span className="text-rose-500 font-extrabold">SMovies</span>
               </h3>
             </div>
             <FontAwesomeIcon icon={faClose} className="text-2xl cursor-pointer" onClick={togggleOpen} title="Close" />
@@ -67,7 +67,7 @@ const SearchComponent = ({ isOpen, togggleOpen }: SearchComponentProps) => {
             <input
               type="text"
               className="py-2 bg-transparent outline-none flex-grow"
-              placeholder="Search MovieMex"
+              placeholder="Search SMovies"
               onKeyUp={(e: any) => searchForMovie(e.target.value)}
             />
           </div>
