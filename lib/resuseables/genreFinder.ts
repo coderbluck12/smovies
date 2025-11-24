@@ -29,7 +29,9 @@ export const getGenreName = (genreIds: number[]): string[] => {
   const genreNames: string[] = [];
   for (const genreId of genreIds) {
     const filteredGenData = genresData.filter((genre) => genre.genre_id === genreId)[0];
-    genreNames.push(filteredGenData.genre_name);
+    if (filteredGenData) {
+      genreNames.push(filteredGenData.genre_name);
+    }
   }
 
   return genreNames;

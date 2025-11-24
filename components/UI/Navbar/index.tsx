@@ -7,6 +7,7 @@ import { faSearch, faEarth, faChevronDown, faClose, faBars } from "@fortawesome/
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import SearchComponent from "../Search";
+import Link from "next/link";
 
 interface NavbarProps {
   isTransparent?: string;
@@ -28,20 +29,16 @@ const Navbar: React.FC<NavbarProps> = ({ isTransparent }) => {
       path: "/",
     },
     {
-      tag: "Movie",
-      path: "#",
+      tag: "Explore",
+      path: "/explore",
     },
     {
-      tag: "TV Show",
-      path: "#",
+      tag: "TV Series",
+      path: "/tv-series",
     },
     {
-      tag: "Web Series",
-      path: "#",
-    },
-    {
-      tag: "Pricing",
-      path: "#",
+      tag: "Upcoming",
+      path: "/upcoming",
     },
   ];
 
@@ -56,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ isTransparent }) => {
         <MaxWidth>
           <nav className="flex justify-between items-center py-4 sm:py-6">
             {/* Logo Section - Always Visible */}
-            <div className="flex space-x-2 sm:space-x-4 items-center">
+            <Link href="/" className="flex space-x-2 sm:space-x-4 items-center">
               <Image 
                 src={`/images/others/movie_box_logo.png`} 
                 width={40} 
@@ -65,7 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({ isTransparent }) => {
                 className="sm:w-[50px] sm:h-[50px]" 
               />
               <span className="font-bold text-lg sm:text-xl">SMovies</span>
-            </div>
+            </Link>
 
             {/* Desktop Search Bar - Hidden on Mobile/Tablet */}
             <div className="hidden lg:flex xl:min-w-[40rem] lg:min-w-[35rem] border rounded-lg px-4 focus-within:border-white text-white border-gray-400 duration-200 bg-transparent items-center justify-between">
@@ -98,9 +95,9 @@ const Navbar: React.FC<NavbarProps> = ({ isTransparent }) => {
               </div>
 
               {/* Sign In Button - Hidden on smallest devices */}
-              <button className="hidden sm:block bg-transparent px-3 sm:px-4 py-1 rounded-full border-2 sm:border-[3px] text-xs sm:text-sm border-rose-500 hover:text-black hover:bg-rose-500 duration-200 transition-all">
+              <Link href="/explore" className="hidden sm:block bg-transparent px-3 sm:px-4 py-1 rounded-full border-2 sm:border-[3px] text-xs sm:text-sm border-rose-500 hover:text-black hover:bg-rose-500 duration-200 transition-all">
                 View More
-              </button>
+              </Link>
 
               {/* Hamburger Menu - Always Visible on Mobile/Tablet */}
               <button

@@ -1,40 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "remixicon/fonts/remixicon.css";
 
 const Footer: React.FC = () => {
   const footerLinks = [
-    [
-      {
-        label: <i className="ri-github-fill"></i>,
-        text: "Github",
-        isIcon: true,
-        link: "https://github.com/benjaminnkem/hngx-movie-app",
-      },
-      {
-        label: <i className="ri-twitter-fill"></i>,
-        text: "Twitter",
-        isIcon: true,
-        link: "https://twitter.com/MainNkem",
-      },
-      {
-        label: <i className="ri-instagram-fill"></i>,
-        text: "Instagram",
-        isIcon: true,
-        link: "https://www.instagram.com/iambenjaminnkem/",
-      },
-      {
-        label: <i className="ri-facebook-circle-fill"></i>,
-        text: "Facebook",
-        isIcon: true,
-        link: "",
-      },
-      {
-        label: <i className="ri-youtube-fill"></i>,
-        text: "Youtube",
-        isIcon: true,
-        link: "",
-      },
-    ],
     [
       {
         label: "Condition of Use",
@@ -55,7 +22,7 @@ const Footer: React.FC = () => {
         link: "",
       },
     ],
-    [{ label: "@2023 MovieMex by Benjamin Nkem", text: "Benjamin Nkem", isIcon: false, link: "" }],
+    [{ label: "SMovies © 2025", text: "Benjamin Nkem", isIcon: false, link: "" }],
   ];
 
   return (
