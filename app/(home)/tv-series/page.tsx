@@ -57,77 +57,86 @@ const TVSeriesPage: React.FC<TVSeriesPageProps> = () => {
 
       <div className="min-h-screen bg-gray-950">
       {/* Hero Section with Featured Show */}
-      <div className="relative h-[85vh] overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src={featuredShow.backdrop_path}
-            alt={featuredShow.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/95 to-gray-950/60"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/50 to-transparent"></div>
-        </div>
+      {featuredShow ? (
+        <div className="relative h-[85vh] overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img
+              src={featuredShow.backdrop_path}
+              alt={featuredShow.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/95 to-gray-950/60"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/50 to-transparent"></div>
+          </div>
 
-        {/* Hero Content */}
-        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-center h-full max-w-2xl space-y-6 pt-20">
-            {/* TV Badge */}
-            <div className="flex items-center gap-3">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 backdrop-blur-sm border border-purple-500/30 rounded-full">
-                <FontAwesomeIcon icon={faTv} className="text-purple-400" />
-                <span className="text-purple-300 font-semibold text-sm">TV Series</span>
+          {/* Hero Content */}
+          <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col justify-center h-full max-w-2xl space-y-6 pt-20">
+              {/* TV Badge */}
+              <div className="flex items-center gap-3">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 backdrop-blur-sm border border-purple-500/30 rounded-full">
+                  <FontAwesomeIcon icon={faTv} className="text-purple-400" />
+                  <span className="text-purple-300 font-semibold text-sm">TV Series</span>
+                </div>
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/20 backdrop-blur-sm border border-yellow-500/30 rounded-full">
+                  <FontAwesomeIcon icon={faTrophy} className="text-yellow-400" />
+                  <span className="text-yellow-300 font-semibold text-sm">Award Winner</span>
+                </div>
               </div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/20 backdrop-blur-sm border border-yellow-500/30 rounded-full">
-                <FontAwesomeIcon icon={faTrophy} className="text-yellow-400" />
-                <span className="text-yellow-300 font-semibold text-sm">Award Winner</span>
+
+              {/* Title */}
+              <h1 className="text-6xl md:text-8xl font-bold text-white leading-tight">
+                {featuredShow.title}
+              </h1>
+
+              {/* Meta Info */}
+              <div className="flex items-center gap-6 text-gray-300">
+                <div className="flex items-center gap-2">
+                  <FontAwesomeIcon icon={faStar} className="text-yellow-400" />
+                  <span className="font-bold text-white">{featuredShow.vote_average}</span>
+                  <span className="text-gray-400">Rating</span>
+                </div>
+                <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                <span>{featuredShow.release_date}</span>
+                <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                <span>5 Seasons</span>
+              </div>
+
+              {/* Overview */}
+              <p className="text-lg text-gray-300 leading-relaxed max-w-xl">
+                {featuredShow.overview}
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-4 pt-4">
+                <button className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold rounded-xl transition-all duration-200 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-105">
+                  <FontAwesomeIcon icon={faPlay} className="group-hover:scale-110 transition-transform" />
+                  <span>Start Watching</span>
+                </button>
+                <button className="group flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold rounded-xl border-2 border-white/20 hover:border-white/40 transition-all duration-200">
+                  <FontAwesomeIcon icon={faHeart} className="group-hover:scale-110 transition-transform" />
+                  <span>Add to List</span>
+                </button>
               </div>
             </div>
+          </div>
 
-            {/* Title */}
-            <h1 className="text-6xl md:text-8xl font-bold text-white leading-tight">
-              {featuredShow.title}
-            </h1>
-
-            {/* Meta Info */}
-            <div className="flex items-center gap-6 text-gray-300">
-              <div className="flex items-center gap-2">
-                <FontAwesomeIcon icon={faStar} className="text-yellow-400" />
-                <span className="font-bold text-white">{featuredShow.vote_average}</span>
-                <span className="text-gray-400">Rating</span>
-              </div>
-              <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-              <span>{featuredShow.release_date}</span>
-              <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-              <span>5 Seasons</span>
-            </div>
-
-            {/* Overview */}
-            <p className="text-lg text-gray-300 leading-relaxed max-w-xl">
-              {featuredShow.overview}
-            </p>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-4 pt-4">
-              <button className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold rounded-xl transition-all duration-200 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-105">
-                <FontAwesomeIcon icon={faPlay} className="group-hover:scale-110 transition-transform" />
-                <span>Start Watching</span>
-              </button>
-              <button className="group flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold rounded-xl border-2 border-white/20 hover:border-white/40 transition-all duration-200">
-                <FontAwesomeIcon icon={faHeart} className="group-hover:scale-110 transition-transform" />
-                <span>Add to List</span>
-              </button>
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
+              <div className="w-1 h-3 bg-white/50 rounded-full"></div>
             </div>
           </div>
         </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
-            <div className="w-1 h-3 bg-white/50 rounded-full"></div>
+      ) : (
+        <div className="relative h-[85vh] overflow-hidden bg-gradient-to-br from-purple-900 via-gray-900 to-gray-950 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="inline-block w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-gray-400 text-lg">Loading featured series...</p>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Content */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
