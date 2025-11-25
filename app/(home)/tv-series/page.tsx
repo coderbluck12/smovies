@@ -208,7 +208,7 @@ const TVSeriesPage: React.FC<TVSeriesPageProps> = () => {
                   Popular <span className="bg-gradient-to-r from-purple-500 to-pink-600 bg-clip-text text-transparent">Series</span>
                 </h2>
               </div>
-              <p className="text-gray-400 ml-4">Binge-worthy shows everyone's watching</p>
+              <p className="text-gray-400 ml-4">Binge-worthy shows everyone&apos;s watching</p>
             </div>
           </div>
 
