@@ -4,8 +4,8 @@ import Link from "next/link";
 const MovieDetailsSideBar = () => {
   const sideLinks = [
     { label: "Home", icon: <i className="ri-home-2-line"></i> },
-    { label: "Movies", icon: <i className="ri-movie-2-line"></i> },
-    { label: "TV Series", icon: <i className="ri-tv-2-line"></i> },
+    { label: "Explore", icon: <i className="ri-movie-2-line"></i> },
+    { label: "TV-Series", icon: <i className="ri-tv-2-line"></i> },
     { label: "Upcoming", icon: <i className="ri-calendar-2-line"></i> },
   ];
 
@@ -19,8 +19,9 @@ const MovieDetailsSideBar = () => {
 
         <div className="space-y-2">
           {sideLinks.map((link, idx) => (
-            <div
+            <Link
               key={idx}
+              href={link.label === "Home" ? "/" : `/${link.label.toLowerCase()}`}
               className={`flex space-x-2 p-5 duration-200 cursor-pointer ${
                 link.label === "Movies"
                   ? "border-r-[6px] border-rose-600 bg-rose-50 hover:bg-rose-100"
@@ -28,7 +29,7 @@ const MovieDetailsSideBar = () => {
               }`}
             >
               {link.icon} <p className="sm:block hidden">{link.label}</p>
-            </div>
+            </Link>
           ))}
         </div>
 
