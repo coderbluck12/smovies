@@ -10,12 +10,27 @@ export const dynamicParams = true;
 export async function generateMetadata({ params }: { params: any }) {
   const { movieId } = params;
 
-  // Check if it's a custom movie
+  // Check if it's a custom movie or series
   if (String(movieId).startsWith("custom")) {
     try {
-      const doc = await adminDb.collection("customMovies").doc(String(movieId)).get();
-      if (doc.exists) {
-        const data = doc.data();
+      // Check if it's a custom series
+      if (String(movieId).includes("series")) {
+        const seriesDoc = await adminDb.collection("customSeries").doc(String(movieId)).get();
+        if (seriesDoc.exists) {
+          const data = seriesDoc.data();
+          if (data) {
+            return {
+              title: `${data.title} - MovieMex`,
+              description: data.overview,
+            };
+          }
+        }
+      }
+
+      // Check if it's a custom movie
+      const movieDoc = await adminDb.collection("customMovies").doc(String(movieId)).get();
+      if (movieDoc.exists) {
+        const data = movieDoc.data();
         if (data) {
           return {
             title: `${data.title} - MovieMex`,
@@ -24,7 +39,7 @@ export async function generateMetadata({ params }: { params: any }) {
         }
       }
     } catch (error) {
-      console.error("Error fetching custom movie metadata:", error);
+      console.error("Error fetching custom content metadata:", error);
     }
   }
 
@@ -50,18 +65,31 @@ export async function generateMetadata({ params }: { params: any }) {
 const getMovieDetails = async (params: any) => {
   const { movieId } = params;
 
-  // Check if it's a custom movie
+  // Check if it's a custom movie or series
   if (String(movieId).startsWith("custom")) {
     try {
-      const doc = await adminDb.collection("customMovies").doc(String(movieId)).get();
-      if (doc.exists) {
+      // Check if it's a custom series
+      if (String(movieId).includes("series")) {
+        const seriesDoc = await adminDb.collection("customSeries").doc(String(movieId)).get();
+        if (seriesDoc.exists) {
+          return {
+            ...seriesDoc.data(),
+            isCustom: true,
+            isSeries: true,
+          };
+        }
+      }
+
+      // Check if it's a custom movie
+      const movieDoc = await adminDb.collection("customMovies").doc(String(movieId)).get();
+      if (movieDoc.exists) {
         return {
-          ...doc.data(),
+          ...movieDoc.data(),
           isCustom: true,
         };
       }
     } catch (error) {
-      console.error("Error fetching custom movie:", error);
+      console.error("Error fetching custom content:", error);
     }
   }
 
@@ -252,7 +280,16 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
               {movieDetails.isCustom && (
                 <div>
                   <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Type</p>
-                  <p className="text-green-600 font-semibold">Custom Movie</p>
+                  <p className="text-green-600 font-semibold">
+                    {movieDetails.isSeries ? "Custom Series" : "Custom Movie"}
+                  </p>
+                </div>
+              )}
+
+              {movieDetails.isSeries && movieDetails.total_seasons && (
+                <div>
+                  <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Total Seasons</p>
+                  <p className="text-gray-900 font-semibold">{movieDetails.total_seasons}</p>
                 </div>
               )}
             </div>
@@ -308,8 +345,9 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
       </section>
       {/* Download Links Section - Prominent Position */}
       <DownloadLinksSection 
-        movieId={movieDetails.id} 
-        type="movie" 
+        movieId={movieDetails.isSeries ? undefined : movieDetails.id}
+        seriesId={movieDetails.isSeries ? movieDetails.id : undefined}
+        type={movieDetails.isSeries ? "series" : "movie"}
       />
     </div>
   );
