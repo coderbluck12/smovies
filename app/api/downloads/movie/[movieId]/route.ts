@@ -5,6 +5,22 @@ export async function GET(_: any, { params }: { params: any }) {
   try {
     const { movieId } = params;
 
+    // Check if it's a custom movie
+    if (String(movieId).startsWith("custom")) {
+      const customDocRef = adminDb.collection("customMovies").doc(String(movieId));
+      const customDoc = await customDocRef.get();
+
+      if (customDoc.exists) {
+        const data = customDoc.data();
+        return NextResponse.json({
+          links: data?.links || [],
+          title: data?.title,
+          id: customDoc.id,
+        });
+      }
+    }
+
+    // Try regular movies collection
     const docRef = adminDb.collection("movies").doc(String(movieId));
     const doc = await docRef.get();
 

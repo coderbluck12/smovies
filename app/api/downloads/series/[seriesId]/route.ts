@@ -5,6 +5,22 @@ export async function GET(_: any, { params }: { params: any }) {
   try {
     const { seriesId } = params;
 
+    // Check if it's a custom series
+    if (String(seriesId).startsWith("custom")) {
+      const customDocRef = adminDb.collection("customSeries").doc(String(seriesId));
+      const customDoc = await customDocRef.get();
+
+      if (customDoc.exists) {
+        const data = customDoc.data();
+        return NextResponse.json({
+          episodes: data?.episodes || [],
+          title: data?.title,
+          id: customDoc.id,
+        });
+      }
+    }
+
+    // Try regular series collection
     const docRef = adminDb.collection("series").doc(String(seriesId));
     const doc = await docRef.get();
 

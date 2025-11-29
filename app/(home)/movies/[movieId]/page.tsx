@@ -118,7 +118,11 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
       <header className="relative w-full rounded-xl overflow-hidden shadow-2xl mb-8">
         <div className="relative h-[500px]">
           <Image
-            src={`https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}`}
+            src={
+              movieDetails.isCustom && movieDetails.backdrop_path
+                ? movieDetails.backdrop_path
+                : `https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}`
+            }
             alt={`${movieDetails.title} Movie Cover`}
             fill
             className="object-cover"
