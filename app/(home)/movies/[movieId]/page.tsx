@@ -320,7 +320,7 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
               <div className="bg-gradient-to-br from-rose-600 to-rose-700"></div>
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
-                <div className="w-full p-4 text-center text-white">
+                <div className="w-full p-4 text-center text-white mb-2">
                   <FontAwesomeIcon icon={faFilm} className="text-2xl mb-2" />
                   <p className="font-semibold">Best Movies in September</p>
                 </div>
