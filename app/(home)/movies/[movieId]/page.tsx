@@ -312,7 +312,7 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
           </div>
 
           {/* Featured Collection */}
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden mb-2">
             <div className="relative h-48 grid grid-cols-4">
               <div className="bg-gradient-to-br from-rose-300 to-rose-400"></div>
               <div className="bg-gradient-to-br from-rose-400 to-rose-500"></div>
@@ -321,7 +321,7 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
                 <div className="w-full p-4 text-center text-white mb-2">
-                  <FontAwesomeIcon icon={faFilm} className="text-2xl mb-2" />
+                  <FontAwesomeIcon icon={faFilm} className="text-2xl" />
                   <p className="font-semibold">Best Movies in September</p>
                 </div>
               </div>
@@ -330,7 +330,7 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
 
           {/* Additional Info Card */}
           {movieDetails.vote_count > 0 && (
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl shadow-md p-6">
+            <div className="bg-gradient-to-br mb-2 from-gray-50 to-gray-100 rounded-xl shadow-md p-6">
               <div className="text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-500 rounded-full mb-3">
                   <FontAwesomeIcon icon={faStar} className="text-white text-2xl" />
