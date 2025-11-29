@@ -9,13 +9,18 @@ import toast from "react-hot-toast";
 import { Dna } from "react-loader-spinner";
 import Link from "next/link";
 
+interface SearchResult extends MovieData {
+  isCustom?: boolean;
+  isSeries?: boolean;
+}
+
 interface SearchComponentProps {
   isOpen: boolean;
   togggleOpen(): void;
 }
 
 const SearchComponent = ({ isOpen, togggleOpen }: SearchComponentProps) => {
-  const [moviesResults, setMoviesResult] = useState<MovieData[]>([]);
+  const [moviesResults, setMoviesResult] = useState<SearchResult[]>([]);
   const [status, setStatus] = useState<{ loading: boolean }>({ loading: false });
   const [moviesHighestLength] = useState<number>(25);
 
@@ -87,28 +92,51 @@ const SearchComponent = ({ isOpen, togggleOpen }: SearchComponentProps) => {
             </div>
           ) : (
             <>
-              {moviesResults ? (
+              {moviesResults && moviesResults.length > 0 ? (
                 <ul className="space-y-2">
                   {moviesResults.map((movie) => (
                     <li key={movie.id}>
                       <Link href={`/movies/${movie.id}`}>
                         <div
-                          className="flex space-x-4 cursor-pointer duration-200 hover:bg-rose-50 dark:hover:bg-rose-600 p-1 rounded-md"
+                          className="flex space-x-4 cursor-pointer duration-200 hover:bg-rose-50 dark:hover:bg-rose-600 p-1 rounded-md relative"
                           title={movie.title}
                         >
-                          <div className="h-16 w-16 overflow-hidden rounded-md">
+                          <div className="h-16 w-16 overflow-hidden rounded-md relative flex-shrink-0">
                             <Image
-                              src={`https://image.tmdb.org/t/p/w200${movie.backdrop_path}`}
+                              src={
+                                movie.isCustom && movie.poster_path
+                                  ? movie.poster_path
+                                  : `https://image.tmdb.org/t/p/w200${movie.backdrop_path}`
+                              }
                               alt={movie.title}
                               width={500}
                               height={500}
                               className="w-full h-full object-cover"
                             />
+                            {movie.isCustom && (
+                              <div className="absolute top-1 right-1 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                                Custom
+                              </div>
+                            )}
+                            {movie.isSeries && (
+                              <div className="absolute bottom-1 right-1 bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                                Series
+                              </div>
+                            )}
                           </div>
 
-                          <div>
+                          <div className="flex-1">
                             <h4 className="text-lg font-bold">{movie.title}</h4>
-                            <p>{new Date(movie.release_date).getFullYear()}</p>
+                            <p className="text-sm text-gray-500">
+                              {movie.release_date
+                                ? new Date(movie.release_date).getFullYear()
+                                : "N/A"}
+                            </p>
+                            {movie.overview && (
+                              <p className="text-xs text-gray-400 line-clamp-2 mt-1">
+                                {movie.overview}
+                              </p>
+                            )}
                           </div>
                         </div>
                       </Link>
@@ -116,7 +144,7 @@ const SearchComponent = ({ isOpen, togggleOpen }: SearchComponentProps) => {
                   ))}
                 </ul>
               ) : (
-                <p className="text-center">No results</p>
+                <p className="text-center text-gray-500">No results found</p>
               )}
             </>
           )}

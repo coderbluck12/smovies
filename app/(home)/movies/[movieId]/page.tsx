@@ -3,11 +3,30 @@ import { faFilm, faMagic, faPlayCircle, faStar, faCalendar, faClock } from "@for
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import DownloadLinksSection from "@/components/UI/DownloadLinksSection";
+import { adminDb } from "@/lib/configs/firebase-admin";
 
 export const dynamicParams = true;
 
 export async function generateMetadata({ params }: { params: any }) {
   const { movieId } = params;
+
+  // Check if it's a custom movie
+  if (String(movieId).startsWith("custom")) {
+    try {
+      const doc = await adminDb.collection("customMovies").doc(String(movieId)).get();
+      if (doc.exists) {
+        const data = doc.data();
+        if (data) {
+          return {
+            title: `${data.title} - MovieMex`,
+            description: data.overview,
+          };
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching custom movie metadata:", error);
+    }
+  }
 
   const options = {
     method: "GET",
@@ -30,6 +49,21 @@ export async function generateMetadata({ params }: { params: any }) {
 
 const getMovieDetails = async (params: any) => {
   const { movieId } = params;
+
+  // Check if it's a custom movie
+  if (String(movieId).startsWith("custom")) {
+    try {
+      const doc = await adminDb.collection("customMovies").doc(String(movieId)).get();
+      if (doc.exists) {
+        return {
+          ...doc.data(),
+          isCustom: true,
+        };
+      }
+    } catch (error) {
+      console.error("Error fetching custom movie:", error);
+    }
+  }
 
   const options = {
     method: "GET",
@@ -105,9 +139,9 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
           {/* Movie Info Overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
             <h1 className="text-5xl font-bold mb-4 drop-shadow-lg" data-testid="movie-title">
-              {movieDetails.original_title}
+              {movieDetails.original_title || movieDetails.title}
             </h1>
-            <div className="flex items-center gap-4 text-lg">
+            <div className="flex items-center gap-4 text-lg flex-wrap">
               {movieDetails.vote_average > 0 && (
                 <div className="flex items-center gap-2 bg-yellow-500/90 px-3 py-1 rounded-full">
                   <FontAwesomeIcon icon={faStar} />
@@ -117,12 +151,21 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
               <span className="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
                 {new Date(movieDetails.release_date).getFullYear()}
               </span>
-              <span className="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
-                PG-13
-              </span>
-              <span className="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm" data-testid="movie-runtime">
-                {formatRuntime(movieDetails.runtime || 124)}
-              </span>
+              {!movieDetails.isCustom && (
+                <span className="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm">
+                  PG-13
+                </span>
+              )}
+              {movieDetails.isCustom && (
+                <span className="bg-green-500/90 px-3 py-1 rounded-full font-semibold">
+                  Custom
+                </span>
+              )}
+              {movieDetails.runtime && (
+                <span className="bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm" data-testid="movie-runtime">
+                  {formatRuntime(movieDetails.runtime)}
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -133,16 +176,18 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
         {/* Left Column - Main Info */}
         <div className="lg:col-span-2 space-y-6">
           {/* Genres */}
-          <div className="flex flex-wrap gap-2">
-            {movieDetails.genres.map((genre: { id: number; name: string }) => (
-              <span
-                key={genre.id}
-                className="px-4 py-2 rounded-full bg-rose-100 text-rose-600 font-medium text-sm hover:bg-rose-200 transition-colors cursor-pointer border border-rose-200"
-              >
-                {genre.name}
-              </span>
-            ))}
-          </div>
+          {movieDetails.genres && movieDetails.genres.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {movieDetails.genres.map((genre: { id: number; name: string }) => (
+                <span
+                  key={genre.id}
+                  className="px-4 py-2 rounded-full bg-rose-100 text-rose-600 font-medium text-sm hover:bg-rose-200 transition-colors cursor-pointer border border-rose-200"
+                >
+                  {genre.name}
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* Overview */}
           <div className="bg-white rounded-xl shadow-md p-6">
@@ -164,33 +209,46 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
             )}
 
             <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Status</p>
-                <p className="text-gray-900 font-semibold">{movieDetails.status}</p>
-              </div>
+              {movieDetails.status && (
+                <div>
+                  <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Status</p>
+                  <p className="text-gray-900 font-semibold">{movieDetails.status}</p>
+                </div>
+              )}
 
-              <div>
-                <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Release Date</p>
-                <p className="text-gray-900 font-semibold" data-testid="movie-release-date">
-                  <FontAwesomeIcon icon={faCalendar} className="mr-2 text-rose-500" />
-                  {formateDate(movieDetails.release_date)}
-                </p>
-              </div>
+              {movieDetails.release_date && (
+                <div>
+                  <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Release Date</p>
+                  <p className="text-gray-900 font-semibold" data-testid="movie-release-date">
+                    <FontAwesomeIcon icon={faCalendar} className="mr-2 text-rose-500" />
+                    {formateDate(movieDetails.release_date)}
+                  </p>
+                </div>
+              )}
 
-              <div>
-                <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Runtime</p>
-                <p className="text-gray-900 font-semibold">
-                  <FontAwesomeIcon icon={faClock} className="mr-2 text-rose-500" />
-                  {formatRuntime(movieDetails.runtime || 124)}
-                </p>
-              </div>
+              {movieDetails.runtime && (
+                <div>
+                  <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Runtime</p>
+                  <p className="text-gray-900 font-semibold">
+                    <FontAwesomeIcon icon={faClock} className="mr-2 text-rose-500" />
+                    {formatRuntime(movieDetails.runtime)}
+                  </p>
+                </div>
+              )}
 
-              {movieDetails.budget > 0 && (
+              {movieDetails.budget && movieDetails.budget > 0 && (
                 <div>
                   <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Budget</p>
                   <p className="text-gray-900 font-semibold">
                     ${(movieDetails.budget / 1000000).toFixed(1)}M
                   </p>
+                </div>
+              )}
+
+              {movieDetails.isCustom && (
+                <div>
+                  <p className="text-gray-600 text-sm uppercase tracking-wide mb-1">Type</p>
+                  <p className="text-green-600 font-semibold">Custom Movie</p>
                 </div>
               )}
             </div>
