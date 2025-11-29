@@ -3,6 +3,7 @@ import { faFilm, faMagic, faPlayCircle, faStar, faCalendar, faClock } from "@for
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import DownloadLinksSection from "@/components/UI/DownloadLinksSection";
+import SeriesEpisodesSection from "@/components/UI/SeriesEpisodesSection";
 import { adminDb } from "@/lib/configs/firebase-admin";
 
 export const dynamicParams = true;
@@ -344,11 +345,14 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
         </div>
       </section>
       {/* Download Links Section - Prominent Position */}
-      <DownloadLinksSection 
-        movieId={movieDetails.isSeries ? undefined : movieDetails.id}
-        seriesId={movieDetails.isSeries ? movieDetails.id : undefined}
-        type={movieDetails.isSeries ? "series" : "movie"}
-      />
+      {movieDetails.isSeries ? (
+        <SeriesEpisodesSection seriesId={movieDetails.id} />
+      ) : (
+        <DownloadLinksSection 
+          movieId={movieDetails.id}
+          type="movie"
+        />
+      )}
     </div>
   );
 };
