@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/configs/firebase";
 import toast from "react-hot-toast";
-import { Film, Tv, LogOut } from "lucide-react";
+import { Film, Tv, LogOut, Plus } from "lucide-react";
 import MovieDownloadForm from "@/components/Admin/MovieDownloadForm";
 import SeriesDownloadForm from "@/components/Admin/SeriesDownloadForm";
+import AddCustomMovieForm from "@/components/Admin/AddCustomMovieForm";
+import AddCustomSeriesForm from "@/components/Admin/AddCustomSeriesForm";
 
-type TabType = "movies" | "series";
+type TabType = "movies" | "series" | "custom-movie" | "custom-series";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>("movies");
@@ -69,10 +71,10 @@ export default function AdminDashboard() {
       {/* Tabs */}
       <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-1">
+          <div className="flex gap-1 overflow-x-auto">
             <button
               onClick={() => setActiveTab("movies")}
-              className={`relative px-6 py-4 font-medium transition-all ${
+              className={`relative px-6 py-4 font-medium transition-all whitespace-nowrap ${
                 activeTab === "movies"
                   ? "text-blue-600"
                   : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
@@ -88,7 +90,7 @@ export default function AdminDashboard() {
             </button>
             <button
               onClick={() => setActiveTab("series")}
-              className={`relative px-6 py-4 font-medium transition-all ${
+              className={`relative px-6 py-4 font-medium transition-all whitespace-nowrap ${
                 activeTab === "series"
                   ? "text-purple-600"
                   : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
@@ -102,6 +104,38 @@ export default function AdminDashboard() {
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600" />
               )}
             </button>
+            <button
+              onClick={() => setActiveTab("custom-movie")}
+              className={`relative px-6 py-4 font-medium transition-all whitespace-nowrap ${
+                activeTab === "custom-movie"
+                  ? "text-green-600"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Add Custom Movie
+              </div>
+              {activeTab === "custom-movie" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-green-600 to-emerald-600" />
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab("custom-series")}
+              className={`relative px-6 py-4 font-medium transition-all whitespace-nowrap ${
+                activeTab === "custom-series"
+                  ? "text-pink-600"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Add Custom Series
+              </div>
+              {activeTab === "custom-series" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-pink-600 to-rose-600" />
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -110,6 +144,8 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === "movies" && <MovieDownloadForm />}
         {activeTab === "series" && <SeriesDownloadForm />}
+        {activeTab === "custom-movie" && <AddCustomMovieForm />}
+        {activeTab === "custom-series" && <AddCustomSeriesForm />}
       </main>
     </div>
   );
