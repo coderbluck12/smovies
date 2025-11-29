@@ -69,7 +69,7 @@ export default function DownloadLinksSection({
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-xl shadow-lg p-8 mb-8 animate-pulse">
+      <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-xl shadow-lg p-8 mb-8 mt-2 animate-pulse">
         <div className="flex items-center justify-center gap-3 text-white">
           <FontAwesomeIcon icon={faSpinner} className="text-2xl animate-spin" />
           <p className="text-lg font-medium">Loading download options...</p>
@@ -80,7 +80,7 @@ export default function DownloadLinksSection({
 
   if (error) {
     return (
-      <div className="bg-red-900 bg-opacity-20 border-2 border-red-500 rounded-xl shadow-lg p-6 mb-8">
+      <div className="bg-red-900 bg-opacity-20 border-2 border-red-500 rounded-xl shadow-lg p-6 mb-8 mt-2">
         <div className="flex items-start gap-4">
           <FontAwesomeIcon icon={faExclamationTriangle} className="text-red-500 text-2xl mt-1" />
           <div>
@@ -104,7 +104,7 @@ export default function DownloadLinksSection({
   });
 
   return (
-    <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 rounded-xl shadow-2xl p-6 mb-6 border border-blue-700">
+    <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 rounded-xl shadow-2xl p-6 mb-6 border border-blue-700 mt-2">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
