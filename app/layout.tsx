@@ -19,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5981344326362620" crossOrigin="anonymous"></script>
+        <meta name="monetag" content="4422b58efc394603db03aba4126676ce"></meta> 
       </head>
       <body className={dmSans.className}>
         <ReactToast />
