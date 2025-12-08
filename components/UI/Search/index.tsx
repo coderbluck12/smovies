@@ -113,16 +113,6 @@ const SearchComponent = ({ isOpen, togggleOpen }: SearchComponentProps) => {
                               height={500}
                               className="w-full h-full object-cover"
                             />
-                            {movie.isCustom && (
-                              <div className="absolute top-1 right-1 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
-                                Custom
-                              </div>
-                            )}
-                            {movie.isSeries && (
-                              <div className="absolute bottom-1 right-1 bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
-                                Series
-                              </div>
-                            )}
                           </div>
 
                           <div className="flex-1">
