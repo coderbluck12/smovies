@@ -133,6 +133,89 @@ export async function GET(request: Request) {
   }
 }
 
+export async function PATCH(request: Request) {
+  try {
+    const authHeader = request.headers.get("authorization");
+    const token = authHeader?.split("Bearer ")[1];
+
+    if (!token) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const adminUser = await verifyAdminToken(token);
+    if (!adminUser) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const seriesId = searchParams.get("seriesId");
+
+    if (!seriesId) {
+      return NextResponse.json(
+        { message: "Missing seriesId parameter" },
+        { status: 400 }
+      );
+    }
+
+    const body = await request.json();
+    const {
+      title,
+      overview,
+      releaseDate,
+      posterUrl,
+      backdropUrl,
+      rating,
+      totalSeasons,
+      episodes,
+    } = body;
+
+    const seriesRef = adminDb.collection("customSeries").doc(seriesId);
+    const seriesDoc = await seriesRef.get();
+
+    if (!seriesDoc.exists) {
+      return NextResponse.json(
+        { message: "Series not found" },
+        { status: 404 }
+      );
+    }
+
+    const updatedData = {
+      title,
+      overview,
+      release_date: releaseDate,
+      poster_path: posterUrl,
+      backdrop_path: backdropUrl,
+      vote_average: rating,
+      total_seasons: totalSeasons,
+      episodes,
+      updatedAt: Date.now(),
+    };
+
+    await seriesRef.update(updatedData);
+
+    return NextResponse.json(
+      {
+        message: "Custom series updated successfully",
+        seriesId,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating custom series:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return NextResponse.json(
+      { message: "Error updating custom series", error: errorMessage },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(request: Request) {
   try {
     const authHeader = request.headers.get("authorization");

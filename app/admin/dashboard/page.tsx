@@ -5,18 +5,34 @@ import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/configs/firebase";
 import toast from "react-hot-toast";
-import { Film, Tv, LogOut, Plus } from "lucide-react";
+import { Film, Tv, LogOut, Plus, Edit } from "lucide-react";
 import MovieDownloadForm from "@/components/Admin/MovieDownloadForm";
 import SeriesDownloadForm from "@/components/Admin/SeriesDownloadForm";
 import AddCustomMovieForm from "@/components/Admin/AddCustomMovieForm";
 import AddCustomSeriesForm from "@/components/Admin/AddCustomSeriesForm";
+import CustomMoviesList from "@/components/Admin/CustomMoviesList";
+import CustomSeriesList from "@/components/Admin/CustomSeriesList";
+import EditCustomMovieForm from "@/components/Admin/EditCustomMovieForm";
+import EditCustomSeriesForm from "@/components/Admin/EditCustomSeriesForm";
+import { CustomMovie, CustomSeries } from "@/lib/types/custom.types";
 
-type TabType = "movies" | "series" | "custom-movie" | "custom-series";
+type TabType = "movies" | "series" | "custom-movie" | "custom-series" | "manage-movies" | "manage-series";
+
+interface EditState {
+  movie?: CustomMovie;
+  series?: CustomSeries;
+}
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>("movies");
+  const [editState, setEditState] = useState<EditState>({});
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+
+  useEffect(() => {
+    // Reset edit state when tab changes
+    setEditState({});
+  }, [activeTab]);
 
   useEffect(() => {
     // Check if user is authenticated
@@ -38,6 +54,47 @@ export default function AdminDashboard() {
       console.error("Logout error:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "movies":
+        return <MovieDownloadForm />;
+      case "series":
+        return <SeriesDownloadForm />;
+      case "custom-movie":
+        return <AddCustomMovieForm />;
+      case "custom-series":
+        return <AddCustomSeriesForm />;
+      case "manage-movies":
+        if (editState.movie) {
+          return (
+            <EditCustomMovieForm
+              movie={editState.movie}
+              onBack={() => setEditState({}) }
+              onSuccess={() => {
+                setEditState({});
+              }}
+            />
+          );
+        }
+        return <CustomMoviesList onEdit={(movie) => setEditState({ movie })} />;
+      case "manage-series":
+        if (editState.series) {
+          return (
+            <EditCustomSeriesForm
+              series={editState.series}
+              onBack={() => setEditState({})}
+              onSuccess={() => {
+                setEditState({});
+              }}
+            />
+          );
+        }
+        return <CustomSeriesList onEdit={(series) => setEditState({ series })} />;
+      default:
+        return null;
     }
   };
 
@@ -136,16 +193,45 @@ export default function AdminDashboard() {
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-pink-600 to-rose-600" />
               )}
             </button>
+            <button
+              onClick={() => setActiveTab("manage-movies")}
+              className={`relative px-6 py-4 font-medium transition-all whitespace-nowrap ${
+                activeTab === "manage-movies"
+                  ? "text-blue-600"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Edit className="w-4 h-4" />
+                Manage Movies
+              </div>
+              {activeTab === "manage-movies" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 to-cyan-500" />
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab("manage-series")}
+              className={`relative px-6 py-4 font-medium transition-all whitespace-nowrap ${
+                activeTab === "manage-series"
+                  ? "text-purple-600"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <Edit className="w-4 h-4" />
+                Manage Series
+              </div>
+              {activeTab === "manage-series" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500" />
+              )}
+            </button>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === "movies" && <MovieDownloadForm />}
-        {activeTab === "series" && <SeriesDownloadForm />}
-        {activeTab === "custom-movie" && <AddCustomMovieForm />}
-        {activeTab === "custom-series" && <AddCustomSeriesForm />}
+        {renderContent()}
       </main>
     </div>
   );

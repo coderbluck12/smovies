@@ -131,6 +131,87 @@ export async function GET(request: Request) {
   }
 }
 
+export async function PATCH(request: Request) {
+  try {
+    const authHeader = request.headers.get("authorization");
+    const token = authHeader?.split("Bearer ")[1];
+
+    if (!token) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const adminUser = await verifyAdminToken(token);
+    if (!adminUser) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const movieId = searchParams.get("movieId");
+
+    if (!movieId) {
+      return NextResponse.json(
+        { message: "Missing movieId parameter" },
+        { status: 400 }
+      );
+    }
+
+    const body = await request.json();
+    const {
+      title,
+      overview,
+      releaseDate,
+      posterUrl,
+      backdropUrl,
+      rating,
+      links,
+    } = body;
+
+    const movieRef = adminDb.collection("customMovies").doc(movieId);
+    const movieDoc = await movieRef.get();
+
+    if (!movieDoc.exists) {
+      return NextResponse.json(
+        { message: "Movie not found" },
+        { status: 404 }
+      );
+    }
+
+    const updatedData = {
+      title,
+      overview,
+      release_date: releaseDate,
+      poster_path: posterUrl,
+      backdrop_path: backdropUrl,
+      vote_average: rating,
+      links,
+      updatedAt: Date.now(),
+    };
+
+    await movieRef.update(updatedData);
+
+    return NextResponse.json(
+      {
+        message: "Custom movie updated successfully",
+        movieId,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating custom movie:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return NextResponse.json(
+      { message: "Error updating custom movie", error: errorMessage },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(request: Request) {
   try {
     const authHeader = request.headers.get("authorization");
