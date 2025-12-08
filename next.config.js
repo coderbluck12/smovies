@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["image.tmdb.org", "firebasestorage.googleapis.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   },
   onDemandEntries: {
     maxInactiveAge: 60 * 1000,
