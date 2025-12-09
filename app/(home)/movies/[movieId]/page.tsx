@@ -356,7 +356,7 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
       )}
 
       <section>
-        <h1 className="text-3xl font-bold mb-6 text-center">Recommended Movies</h1>
+        <h1 className="text-3xl font-bold text-center">Recommended Movies</h1>
         <RecommendedMovies 
           movieId={movieDetails.id}
           isCustom={!!movieDetails.isCustom}
