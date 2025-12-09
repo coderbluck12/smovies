@@ -355,7 +355,7 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
         />
       )}
 
-      <section>
+      <section className="mt-2">
         <h1 className="text-3xl font-bold text-center">Recommended Movies</h1>
         <RecommendedMovies 
           movieId={movieDetails.id}
