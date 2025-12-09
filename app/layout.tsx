@@ -12,6 +12,9 @@ const dmSans = DM_Sans({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "SMovies",
   description: "SMovies - Watch and download movies online for free",
+  icons: {
+    icon: '/images/others/movie_box_logo.png'
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

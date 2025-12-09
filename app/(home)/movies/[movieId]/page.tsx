@@ -1,4 +1,5 @@
 import { MovieData } from "@/lib/types/movieData.types";
+import { Metadata } from 'next';
 import { faFilm, faMagic, faPlayCircle, faStar, faCalendar, faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
@@ -9,34 +10,36 @@ import { adminDb } from "@/lib/configs/firebase-admin";
 
 export const dynamicParams = true;
 
-export async function generateMetadata({ params }: { params: any }) {
+export async function generateMetadata({ params }: { params: { movieId: string } }): Promise<Metadata> {
   const { movieId } = params;
 
-  // Check if it's a custom movie or series
-  if (String(movieId).startsWith("custom")) {
+  const APP_NAME = "SMovies";
+
+  // Handle custom content (movies and series)
+  if (movieId.startsWith("custom")) {
     try {
-      // Check if it's a custom series
-      if (String(movieId).includes("series")) {
-        const seriesDoc = await adminDb.collection("customSeries").doc(String(movieId)).get();
-        if (seriesDoc.exists) {
-          const data = seriesDoc.data();
-          if (data) {
-            return {
-              title: `${data.title} - MovieMex`,
-              description: data.overview,
-            };
-          }
-        }
+      let doc;
+      if (movieId.includes("series")) {
+        doc = await adminDb.collection("customSeries").doc(movieId).get();
+      } else {
+        doc = await adminDb.collection("customMovies").doc(movieId).get();
       }
 
-      // Check if it's a custom movie
-      const movieDoc = await adminDb.collection("customMovies").doc(String(movieId)).get();
-      if (movieDoc.exists) {
-        const data = movieDoc.data();
+      if (doc.exists) {
+        const data = doc.data();
         if (data) {
+          const title = `${data.title} - ${APP_NAME}`;
+          const description = data.overview;
+          const imageUrl = data.backdrop_path || data.poster_path;
+
           return {
-            title: `${data.title} - MovieMex`,
-            description: data.overview,
+            title,
+            description,
+            openGraph: {
+              title,
+              description,
+              images: imageUrl ? [imageUrl] : [],
+            },
           };
         }
       }
@@ -45,23 +48,45 @@ export async function generateMetadata({ params }: { params: any }) {
     }
   }
 
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${process.env.READ_ACCESS_TOKEN}`,
-    },
-  };
+  // Handle TMDB movies
+  try {
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${process.env.READ_ACCESS_TOKEN}`,
+      },
+    };
 
-  const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?language=en-US`, options);
-  if (!res.ok) return {};
+    const res = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?language=en-US`, options);
+    if (!res.ok) {
+        return {
+            title: `Movie not found - ${APP_NAME}`,
+            description: "The requested movie could not be found.",
+        };
+    }
 
-  const movieData: MovieData = await res.json();
+    const movieData: MovieData = await res.json();
+    const title = `${movieData.title} (${new Date(movieData.release_date).getFullYear()}) - ${APP_NAME}`;
+    const description = movieData.overview;
+    const imageUrl = movieData.backdrop_path ? `https://image.tmdb.org/t/p/original${movieData.backdrop_path}` : undefined;
 
-  return {
-    title: `${movieData.title} (${new Date(movieData.release_date).getFullYear()}) - MovieMex`,
-    description: movieData.overview,
-  };
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        images: imageUrl ? [imageUrl] : [],
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching TMDB metadata:', error);
+    return {
+        title: `Error - ${APP_NAME}`,
+        description: "An error occurred while fetching movie details.",
+    };
+  }
 }
 
 const getMovieDetails = async (params: any) => {
@@ -111,6 +136,21 @@ const getMovieDetails = async (params: any) => {
 const MainMovieDetails = async ({ params }: { params: any }) => {
   const movieDetails: any = await getMovieDetails(params);
 
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': movieDetails.isSeries ? 'TVSeries' : 'Movie',
+    'name': movieDetails.title || movieDetails.original_title,
+    'description': movieDetails.overview,
+    'image': movieDetails.backdrop_path ? (movieDetails.isCustom ? movieDetails.backdrop_path : `https://image.tmdb.org/t/p/original${movieDetails.backdrop_path}`) : undefined,
+    'datePublished': movieDetails.release_date,
+    'aggregateRating': movieDetails.vote_average > 0 ? {
+      '@type': 'AggregateRating',
+      'ratingValue': movieDetails.vote_average.toFixed(1),
+      'bestRating': '10',
+      'ratingCount': movieDetails.vote_count || undefined,
+    } : undefined,
+  };
+
   const formateDate = (date: string) => {
     const formDate = new Date(date);
     const day = formDate.getUTCDate();
@@ -144,6 +184,10 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       {/* Hero Section with Backdrop */}
       <header className="relative w-full rounded-xl overflow-hidden shadow-2xl mb-8">
         <div className="relative h-[500px]">
