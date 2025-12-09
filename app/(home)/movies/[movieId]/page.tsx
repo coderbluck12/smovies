@@ -355,12 +355,14 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
         />
       )}
 
-      {/* Recommended Movies Section */}
-      <RecommendedMovies 
-        movieId={movieDetails.id}
-        isCustom={!!movieDetails.isCustom}
-        title={movieDetails.title}
-      />
+      <section>
+        <h1 className="text-3xl font-bold mb-6 text-center">Recommended Movies</h1>
+        <RecommendedMovies 
+          movieId={movieDetails.id}
+          isCustom={!!movieDetails.isCustom}
+          title={movieDetails.title}
+        />
+      </section>
     </div>
   );
 };
