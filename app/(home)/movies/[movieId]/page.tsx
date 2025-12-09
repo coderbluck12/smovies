@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import DownloadLinksSection from "@/components/UI/DownloadLinksSection";
 import SeriesEpisodesSection from "@/components/UI/SeriesEpisodesSection";
+import RecommendedMovies from "@/components/UI/RecommendedMovies";
 import { adminDb } from "@/lib/configs/firebase-admin";
 
 export const dynamicParams = true;
@@ -353,6 +354,13 @@ const MainMovieDetails = async ({ params }: { params: any }) => {
           type="movie"
         />
       )}
+
+      {/* Recommended Movies Section */}
+      <RecommendedMovies 
+        movieId={movieDetails.id}
+        isCustom={!!movieDetails.isCustom}
+        title={movieDetails.title}
+      />
     </div>
   );
 };
